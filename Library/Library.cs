@@ -14,7 +14,7 @@ namespace BookLibrary
 
         public void Add(T book)
         {
-            if (Count >= books.Length)
+            if (count >= books.Length)
             {
                 Array.Resize(ref books, books.Length * 2);
             }

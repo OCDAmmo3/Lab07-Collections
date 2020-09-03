@@ -114,33 +114,63 @@ namespace BookLibrary
         {
             int counter = 1;
             foreach (Book book in BookBag)
-                Console.WriteLine($"{counter++}: {book.Title} - Written by {book.Author.FullName}. {book.PageNumber} pages {book.Genre}");
+                if (book != null)
+                    Console.WriteLine($"{counter++}: {book.Title} - Written by {book.Author.FullName}. {book.PageNumber} pages {book.Genre}");
         }
 
         public static void AddBookToBookBag()
         {
             Dictionary<int, Book> books = new Dictionary<int, Book>();
 
+            int counter = 1;
+            foreach (Book book in Library)
+            {
+                books.Add(counter, book);
+                Console.WriteLine($"{counter++}: {book.Title} - Written by {book.Author.FullName}");
+            }
+
             int input = -1;
             while (input < 0)
-                input = TryGetValue();
+            {
+                Console.WriteLine("Choose a book: (pick a number)");
+                string borrowed = Console.ReadLine();
+                input = IsItValid(borrowed);
+            }
 
-            books.TryGetValue(input, out Book borrowedBook);
+            books.TryGetValue(input + 1, out Book borrowedBook);
             Library.Remove(input);
             BookBag.Add(borrowedBook);
+
+            Console.WriteLine("Added book to Book Bag! Your Book Bag now includes:");
+            ViewBookBag();
         }
 
         public static void ReturnBorrowedBook()
         {
             Dictionary<int, Book> books = new Dictionary<int, Book>();
 
+            int counter = 1;
+            foreach (Book book in BookBag)
+            {
+                books.Add(counter, book);
+                if (book != null)
+                    Console.WriteLine($"{counter++}: {book.Title} - Written by {book.Author.FullName}");
+            }
+
             int input = -1;
             while (input < 0)
-                input = TryGetValue();
+            {
+                Console.WriteLine("Choose a book: (pick a number)");
+                string borrowed = Console.ReadLine();
+                input = IsItValid(borrowed);
+            }
 
-            books.TryGetValue(input, out Book returnedBook);
+            books.TryGetValue(input + 1, out Book returnedBook);
             BookBag.Remove(returnedBook);
             Library.Add(returnedBook);
+
+            Console.WriteLine("Returned book from Book Bag! Your Book Bag now includes:");
+            ViewBookBag();
         }
 
         static string Start()
@@ -157,12 +187,8 @@ namespace BookLibrary
             return Console.ReadLine();
         }
 
-        private static int TryGetValue()
+        private static int IsItValid(string borrowed)
         {
-            Console.WriteLine("Choose a book: (pick a number)");
-            ViewBookBag();
-
-            string borrowed = Console.ReadLine();
             if (!int.TryParse(borrowed, out int selection))
             {
                 return -1;
