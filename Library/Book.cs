@@ -6,13 +6,20 @@
 
         public Author Author { get; set; }
 
-        public enum Genre
-        {
-            horror = 5,
-            fantasy = 10,
-            romance = 15,
-            adventure = 20,
-            drama = 25
-        }
+        public int PageNumber { get; set; }
+
+        public Genre Genre { get; set; }
+
+
+    }
+
+    public enum Genre
+    {
+        horror,
+        fantasy,
+        romance,
+        adventure,
+        drama,
+        nonfiction
     }
 }
