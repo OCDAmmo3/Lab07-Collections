@@ -10,7 +10,6 @@
 
         public Genre Genre { get; set; }
 
-
     }
 
     public enum Genre

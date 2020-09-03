@@ -18,9 +18,9 @@ namespace BookLibrary
         {
             Library = new Library<Book>();
             BookBag = new List<Book>();
-            /*FillLibrary();
+            FillLibrary();
             FillBookBag();
-*/
+
             string cont = "1";
             while (cont == "1")
             {
@@ -112,17 +112,35 @@ namespace BookLibrary
 
         public static void ViewBookBag()
         {
-            Console.WriteLine("Here's the book bag books");
+            int counter = 1;
+            foreach (Book book in BookBag)
+                Console.WriteLine($"{counter++}: {book.Title} - Written by {book.Author.FullName}. {book.PageNumber} pages {book.Genre}");
         }
 
         public static void AddBookToBookBag()
         {
-            Console.WriteLine("Book added to book bag");
+            Dictionary<int, Book> books = new Dictionary<int, Book>();
+
+            int input = -1;
+            while (input < 0)
+                input = TryGetValue();
+
+            books.TryGetValue(input, out Book borrowedBook);
+            Library.Remove(input);
+            BookBag.Add(borrowedBook);
         }
 
         public static void ReturnBorrowedBook()
         {
-            Console.WriteLine("Book removed from book bag");
+            Dictionary<int, Book> books = new Dictionary<int, Book>();
+
+            int input = -1;
+            while (input < 0)
+                input = TryGetValue();
+
+            books.TryGetValue(input, out Book returnedBook);
+            BookBag.Remove(returnedBook);
+            Library.Add(returnedBook);
         }
 
         static string Start()
@@ -137,6 +155,19 @@ namespace BookLibrary
             Console.WriteLine("6 - Return a Checked Out Book \n");
 
             return Console.ReadLine();
+        }
+
+        private static int TryGetValue()
+        {
+            Console.WriteLine("Choose a book: (pick a number)");
+            ViewBookBag();
+
+            string borrowed = Console.ReadLine();
+            if (!int.TryParse(borrowed, out int selection))
+            {
+                return -1;
+            }
+            return selection - 1;
         }
 
         public static int RemoveWhichBook()
@@ -165,21 +196,34 @@ namespace BookLibrary
             int counter = 1;
             foreach (Book book in Library)
             {
-                Console.WriteLine($"{counter}: {book.Title} - Written by {book.Author.FullName}. {book.PageNumber} pages {book.Genre}");
+                if (book != null)
+                    Console.WriteLine($"{counter++}: {book.Title} - Written by {book.Author.FullName}. {book.PageNumber} pages {book.Genre}");
             }
         }
 
         public static void AddABook(string title, string firstName, string lastName, int pages, Genre genre)
         {
-            Book book = new Book()
+            Book book = CreateBook(title, firstName, lastName, pages, genre);
+
+            Library.Add(book);
+        }
+
+        public static void AddABookToBag(string title, string firstName, string lastName, int pages, Genre genre)
+        {
+            Book book = CreateBook(title, firstName, lastName, pages, genre);
+
+            BookBag.Add(book);
+        }
+
+        private static Book CreateBook(string title, string firstName, string lastName, int pages, Genre genre)
+        {
+            return new Book()
             {
                 Title = title,
                 Author = new Author(firstName, lastName),
                 PageNumber = pages,
                 Genre = genre
             };
-
-            Library.Add(book);
         }
 
         public static int GetPages()
@@ -214,6 +258,24 @@ namespace BookLibrary
             }
 
             return number - 1;
+        }
+
+        public static void FillLibrary()
+        {
+            AddABook("Harry Potter and the Philosopher's Stone", "J.K.", "Rowling", 223, (Genre)1);
+            AddABook("Harry Potter and the Chamber of Secrets", "J.K.", "Rowling", 251, (Genre)1);
+            AddABook("Harry Potter and the Prisoner of Azkaban", "J.K.", "Rowling", 317, (Genre)1);
+            AddABook("Harry Potter and the Goblet of Fire", "J.K.", "Rowling", 636, (Genre)1);
+            AddABook("Harry Potter and the Order of the Phoenix", "J.K.", "Rowling", 766, (Genre)1);
+            AddABook("Harry Potter and the Half Blood Prince", "J.K.", "Rowling", 607, (Genre)1);
+            AddABook("Harry Potter and the Deathly Hallows", "J.K.", "Rowling", 607, (Genre)1);
+        }
+
+        public static void FillBookBag()
+        {
+            AddABookToBag("Lord of the Rings: The Fellowship of the Ring", "J.R.R.", "Tolkien", 423, (Genre)1);
+            AddABookToBag("Lord of the Rings: The Two Towers", "J.R.R.", "Tolkien", 352, (Genre)1);
+            AddABookToBag("Lord of the Rings: Return of the King", "J.R.R.", "Tolkien", 416, (Genre)1);
         }
     }
 }
