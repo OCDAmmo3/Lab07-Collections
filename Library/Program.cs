@@ -96,6 +96,18 @@ namespace BookLibrary
         public static void RemoveBookFromLibrary()
         {
             Console.Clear();
+
+            Console.WriteLine("Library includes:");
+            WriteBooks();
+
+            int bookToRemove = -1;
+            while (bookToRemove < 0)
+                bookToRemove = RemoveWhichBook();
+
+            Console.Clear();
+
+            Console.WriteLine("Book removed. Library now includes:");
+            WriteBooks();
         }
 
         public static void ViewBookBag()
@@ -127,12 +139,33 @@ namespace BookLibrary
             return Console.ReadLine();
         }
 
+        public static int RemoveWhichBook()
+        {
+            Console.WriteLine("Which book would you like to remove? (Choose a number)");
+            string removal = Console.ReadLine();
+
+            if (int.TryParse(removal, out int removalNumber))
+            {
+                if (!Library.Remove(removalNumber - 1))
+                {
+                    Console.WriteLine("Incorrect number, try again.");
+                    return -1;
+                }
+                return int.Parse(removal);
+            }
+            else
+            {
+                Console.WriteLine("Invalid input, try again.");
+                return -1;
+            }
+        }
+
         private static void WriteBooks()
         {
             int counter = 1;
             foreach (Book book in Library)
             {
-                Console.WriteLine($"{counter}: {book.Title} - Written by {book.Author.FullName}. {book.NumberOfPages} pages {book.Genre}");
+                Console.WriteLine($"{counter}: {book.Title} - Written by {book.Author.FullName}. {book.PageNumber} pages {book.Genre}");
             }
         }
 
